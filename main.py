@@ -1,7 +1,5 @@
-import machine
-
 def connectToWifiAndUpdate():
-    import time, network, gc, config
+    import time, network, gc, config, machine
     time.sleep(1)
     print('Memory free', gc.mem_free())
 
@@ -26,6 +24,5 @@ def connectToWifiAndUpdate():
 def startApp():
     import app.start
 
-if machine.reset_cause() == machine.PWRON_RESET:
-	connectToWifiAndUpdate()
+connectToWifiAndUpdate()
 startApp()
