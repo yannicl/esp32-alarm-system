@@ -64,15 +64,22 @@ p6 = Pin(18, Pin.IN, None)
 p7 = Pin(19, Pin.IN, None)
 
 zones = [p0, p1, p2, p3, p4, p5, p6, p7]
+zoneTypes = ["NC", "NO", "NO", "NC", "NC", "NC", "NC", "NO"]
 readings = []
 
 def read_zones():
     l = []
-    for zone in zones:
+    for zone, zoneType in zip(zones, zoneTypes):
         if (zone.value() == 1):
-            l.append(ZoneReading.NORMAL)
+            if (zoneType == "NC"): 
+                l.append(ZoneReading.TRIGGERED)
+            else:
+                l.append(ZoneReading.NORMAL)
         else:
-            l.append(ZoneReading.TRIGGERED)
+            if (zoneType == "NC"): 
+                l.append(ZoneReading.NORMAL)
+            else:
+                l.append(ZoneReading.TRIGGERED)
     return l
 
     
