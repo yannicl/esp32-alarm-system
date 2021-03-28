@@ -166,7 +166,6 @@ class AlarmStateProcessor:
     def config(self, alarmConfig):
         self.bell.config(alarmConfig["bell"])
         self.zoneStatuses.config(alarmConfig["zones"])
-        self.publishState()
 
     def publishAlarm(self):
         print('this implementation do nothing')

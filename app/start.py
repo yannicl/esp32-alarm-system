@@ -164,14 +164,17 @@ jwt = create_jwt(config.google_cloud_config['project_id'], config.jwt_config['pr
 client = get_mqtt_client(config.google_cloud_config['project_id'], config.google_cloud_config['cloud_region'], config.google_cloud_config['registry_id'], config.google_cloud_config['device_id'], jwt)
 mqttAlarmStateProcessor.setMqttClient(client)
 
-
+mainLoopCntr = 0
 
 while True:
     wdt.feed()
+    mainLoopCntr = mainLoopCntr + 1
     # if nothing has changed, blocks for 1 seconds and then returns false
     if wait_for_readings_change():
         mqttAlarmStateProcessor.handleZonesUpdate(readings)
         utime.sleep(10)  # Delay for 10 seconds. Prevent excessive updates if inputs are unstable
+    if (mainLoopCntr % 600 == 0): # about each 10 minutes to prevent idle connection close for GCP IoT server
+        mqttAlarmStateProcessor.publishState()
     
     mqttAlarmStateProcessor.handleTick()
     client.check_msg() # Check for new messages on subscription
