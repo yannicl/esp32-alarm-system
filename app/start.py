@@ -32,7 +32,6 @@ class MqttAlarmStateProcessor(AlarmStateProcessor):
     
     def __init__(self, bell):
         self.mqttClient = None
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         super().__init__(bell)
 
     def setMqttClient(self, client):
@@ -41,14 +40,14 @@ class MqttAlarmStateProcessor(AlarmStateProcessor):
     def publishAlarm(self):
         message = ujson.dumps(self.alarmStatus.export())
         print("Publishing alarm message "+str(message))
-        self.sock.sendto(message.encode('utf-8'), ("255.255.255.255", 5935))
+        self.sock.sendto(message.encode('utf-8'), ("192.168.0.255", 5935))
         mqtt_topic = '/devices/{}/{}'.format(config.google_cloud_config['device_id'], 'events')
         if (self.mqttClient is not None):
             self.mqttClient.publish(mqtt_topic.encode('utf-8'), message.encode('utf-8'))
     def publishState(self):
         message = ujson.dumps(self.alarmStatus.export())
         print("Publishing state message "+str(message))
-        self.sock.sendto(message.encode('utf-8'), ("255.255.255.255", 5935))
+        self.sock.sendto(message.encode('utf-8'), ("192.168.0.255", 5935))
         mqtt_topic = '/devices/{}/{}'.format(config.google_cloud_config['device_id'], 'state')
         if (self.mqttClient is not None):
             self.mqttClient.publish(mqtt_topic.encode('utf-8'), message.encode('utf-8'))
